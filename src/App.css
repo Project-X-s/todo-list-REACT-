@@ -1,0 +1,28 @@
+
+.App {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #f0f0f0;
+  border-radius: 12px;
+  border: 1px solid   #00000091;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.filters {
+  margin-top: 10px;
+}
+
+.filters button {
+  margin-right: 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: #600dbe;
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.filters button:hover {
+  background-color: #0056b3;
+}

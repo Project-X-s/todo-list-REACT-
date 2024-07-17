@@ -1,2 +1,1 @@
-# todo-list-REACT-
-Lista de afazeres feita com react
+# Lista de afazeres
