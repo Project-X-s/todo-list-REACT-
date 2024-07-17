@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // npm install axios
+import axios from 'axios';
 import TodoList from './TodoList';
 import '../App.css';
 
@@ -9,59 +9,78 @@ function App() {
 
   useEffect(() => {
     fetchAllTasks();
-  }, []); 
+  }, []);
 
   const fetchAllTasks = async () => {
     try {
-      const response = await axios.get('/get_all_not_done_tasks'); 
-      setTodos(response.data);
+      const response = await axios.get('http://localhost:5000/get_all');
+      const formattedTodos = response.data.map(item => ({
+        id: item[0],
+        text: item[1],
+        completed: item[2] === 1 
+      }));
+      setTodos(formattedTodos); 
     } catch (error) {
-      console.error('Error fetching tasks:', error);
+      if (error.response) {
+        console.error('Error fetching tasks:', error.response.status, error.response.data);
+      } else if (error.request) {
+        console.error('No response from server:', error.request);
+      } else {
+        console.error('Error setting up the request:', error.message);
+      }
     }
   };
+  
 
   const addTodo = async (text) => {
     try {
-      const response = await axios.post('/create_task', { title: text });
-      setTodos([...todos, { id: response.data.id, text: text, completed: false }]);
+      const response = await axios.post('http://localhost:5000/create_task', { title: text });
+      const newTodo = { id: response.data.id, text: text, completed: false };
+      setTodos([...todos, newTodo]);
     } catch (error) {
       console.error('Error adding task:', error);
     }
   };
 
   const deleteTodo = async (id) => {
+    if (!id) {
+      console.error('ID não definido para deletar');
+      return;
+    }
+  
     try {
-      await axios.delete(`/delete_task/${id}`);
+      await axios.delete(`http://localhost:5000/delete_task/${id}`);
       const updatedTodos = todos.filter(todo => todo.id !== id);
       setTodos(updatedTodos);
     } catch (error) {
       console.error('Error deleting task:', error);
     }
   };
-
+  
+  
   const toggleComplete = async (id) => {
-    const updatedTodos = todos.map(todo => {
-      if (todo.id === id) {
-        const updatedTodo = { ...todo, completed: !todo.completed };
-        updateTask(id, updatedTodo.text, updatedTodo.completed);
-        return updatedTodo;
-      }
-      return todo;
-    });
-    setTodos(updatedTodos);
-  };
-
-  const updateTask = async (id, title, done) => {
+    if (!id) {
+      console.error('ID não definido para atualizar');
+      return;
+    }
+  
     try {
-      await axios.put('/update_task', { id, title, done });
+      const todoToUpdate = todos.find(todo => todo.id === id);
+      const updatedTodo = { ...todoToUpdate, completed: !todoToUpdate.completed };
+      await axios.put(`http://localhost:5000/update_task/${id}`, updatedTodo);
+      const updatedTodos = todos.map(todo =>
+        todo.id === id ? updatedTodo : todo
+      );
+      setTodos(updatedTodos);
     } catch (error) {
       console.error('Error updating task:', error);
     }
   };
+  
 
   const clearCompleted = async () => {
     try {
-      await axios.delete('/delete_all_done_tasks');
+      await axios.delete('http://localhost:5000/delete_all_done_tasks');
       const updatedTodos = todos.filter(todo => !todo.completed);
       setTodos(updatedTodos);
     } catch (error) {
