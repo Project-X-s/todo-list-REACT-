@@ -1,7 +1,12 @@
 from flask import Flask, request, jsonify, Blueprint
-from model import create, update, delete, get_all_done, get_all_not_done, delete_all_done
+from model import get_all, create, update, delete, get_all_done, get_all_not_done, delete_all_done
 
 app = Blueprint('controller', __name__)
+
+@app.route('/get_all_tasks', methods=['GET'])
+def get_all_tasks():
+  tasks = get_all()
+  return jsonify(tasks), 200
 
 @app.route('/create_task', methods=['POST'])
 def create_task():

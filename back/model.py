@@ -14,6 +14,22 @@ CREATE TABLE IF NOT EXISTS task (
 conn.commit()
 conn.close()
 
+def get_all():
+    conn = sqlite3.connect('database.db')
+    cursor = conn.cursor()
+
+    cursor.execute('SELECT * FROM task;')
+    tasks = cursor.fetchall()
+    
+    # Obtendo os nomes das colunas
+    column_names = [description[0] for description in cursor.description]
+
+    # Convertendo as tuplas em dicionários
+    tasks_list = [dict(zip(column_names, task)) for task in tasks]
+
+    conn.close()
+    
+    return tasks_list
 
 def create(title):
   conn = sqlite3.connect('database.db')
