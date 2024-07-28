@@ -64,10 +64,17 @@ def get_all_done():
 
   cursor.execute('SELECT * FROM task WHERE done = ?;', (True,))
   tasks = cursor.fetchall()
+  
+
+  # Obtendo os nomes das colunas
+  column_names = [description[0] for description in cursor.description]
+
+  # Convertendo as tuplas em dicionários
+  tasks_list = [dict(zip(column_names, task)) for task in tasks]
 
   conn.close()
 
-  return tasks
+  return tasks_list
 
 def get_all_not_done():
   conn = sqlite3.connect('database.db')
@@ -75,10 +82,16 @@ def get_all_not_done():
 
   cursor.execute('SELECT * FROM task WHERE done = ?;', (False,))
   tasks = cursor.fetchall()
+  
+  # Obtendo os nomes das colunas
+  column_names = [description[0] for description in cursor.description]
+
+  # Convertendo as tuplas em dicionários
+  tasks_list = [dict(zip(column_names, task)) for task in tasks]
 
   conn.close()
 
-  return tasks
+  return tasks_list
 
 def delete_all_done():
   conn = sqlite3.connect('database.db')
