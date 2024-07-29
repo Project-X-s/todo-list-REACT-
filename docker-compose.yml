@@ -1,0 +1,22 @@
+version: "3.1"
+
+services:
+  python-back:
+    container_name: python-back
+    image: santthiago/todolist-backpy:0.0.1
+    ports:
+      - "5000:5000"
+    networks:
+      - net-pyreact
+
+  react-front:
+    container_name: react-front
+    image: santthiago/todolist-front:0.0.1
+    ports:
+    - "3000:3000"
+    networks:
+      - net-pyreact
+
+networks:
+  net-pyreact:
+    driver: bridge
